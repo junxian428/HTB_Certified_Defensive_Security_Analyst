@@ -1,0 +1,1 @@
+# HTB_Certified_Defensive_Security_Analyst
