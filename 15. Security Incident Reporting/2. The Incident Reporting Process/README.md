@@ -41,3 +41,11 @@ The duration of this phase can vary significantly, ranging from a couple of days
 <h3> Conclusion </h3>
 
 Far from being a mere procedural formality, the reporting process is a strategic asset that enhances an organization's resilience against security threats. Through rigorous documentation, analysis, and learning from each incident, organizations can convert challenges into opportunities for bolstering their security stance.
+
+Questions
+
+Answer the question(s) below to complete this Section and earn cubes!
+
+- 3 Name the step responsible for writing down every information that could be used and be classified as important. (2 words)
+
+Incident Logging
