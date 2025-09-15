@@ -82,3 +82,11 @@ It's crucial to recognize that incidents frequently straddle multiple categories
 <h3>Conclusion</h3>
 
 In summary, adept identification and categorization constitute the bedrock of any proficient Security Operations Center (SOC). These processes dictate the alacrity, precision, and effectiveness of the response measures, and consequently, the mitigation strategies.
+
+Questions
+
+Answer the question(s) below to complete this Section and earn cubes!
+
+- 3 Name the type of an incident involving an attempt of infiltration through an email.
+
+Phishing
