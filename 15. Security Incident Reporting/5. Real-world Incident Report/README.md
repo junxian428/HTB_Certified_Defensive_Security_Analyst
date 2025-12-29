@@ -187,4 +187,131 @@ Scdbg reveals that the shellcode will attempt to initiate a connection to 192.16
 
 The depth of the technical analysis can be tailored to ensure that all stakeholders are adequately informed about the incident and the actions taken in response. While we've chosen to keep the investigation details concise in this module to avoid overwhelming you, it's important to note that in a real-world situation, every claim or statement would be backed up with robust evidence.
 
-《还》Indicators of Compromise (IoCs)
+<h3>Indicators of Compromise (IoCs)</h3>
+
+C2 IP: 192.168.220.66
+
+cv.pdf (SHA256): ef59d7038cfd565fd65bae12588810d5361df938244ebad33b71882dcf683011
+
+<h3>Root Cause Analysis</h3>
+
+Insufficient network access controls allowed the unauthorized entity access to SampleCorp's internal network.
+
+The primary catalysts for the incident were traced back to two significant vulnerabilities. The first vulnerability stemmed from the continued use of an outdated version of Acrobat Reader, while the second was attributed to a buffer overflow issue present within a proprietary application. Compounding these vulnerabilities was the inadequate network segregation of crucial systems, leaving them more exposed and easier targets for potential threats. Additionally, there was a notable gap in user awareness, evident from the absence of comprehensive training against phishing tactics, which could have served as the initial entry point for the attackers.
+
+<h3>Technical Timeline</h3>
+
+Initial Compromise
+
+April 22nd, 2019, 00:27:27: One of the employees opened a malicious PDF document (cv.pdf) on WKST01.samplecorp.com, which exploited a known vulnerability in an outdated version of Acrobat Reader. This led to the execution of a malicious payload that established initial foothold on the system.
+
+Lateral Movement
+
+April 22nd, 2019, 00:50:18: The unauthorized entity leveraged the initial access to perform reconnaissance on the internal network. They discovered a buffer overflow vulnerability in a proprietary HR application running on HR01.samplecorp.com. Using a crafted payload, they exploited this vulnerability to gain unauthorized access to the HR system.
+
+Data Access & Exfiltration
+
+April 22nd, 2019, 00:35:09: The unauthorized entity accessed various directories on WKST01.samplecorp.com containing both proprietary source code and API keys.
+
+April 22nd, 2019, 01:30:12: The unauthorized entity located an unencrypted database on HR01.samplecorp.com containing sensitive employee and partner data, including Social Security numbers and salary information. They compressed this data and exfiltrated it to an external server via a secure SSH tunnel.
+
+C2 Communications
+
+An unauthorized entity gained physical access to SampleCorp's internal network. The Command and Control (C2) IP address identified was an internal one: 192.168.220.66.
+
+Malware Deployment or Activity
+
+The malware was disseminated via a malicious PDF document and made extensive use of legitimate Windows binaries 
+for staging, command execution, and post-exploitation purposes.
+
+Subsequently, shellcode was utilized within a buffer overflow payload to infect HR01.samplecorp.com.
+
+Containment Times
+
+April 22nd, 2019, 02:30:11: SampleCorp's SOC and DFIR teams detected the unauthorized activities and 
+immediately isolated WKST01.samplecorp.com and HR01.samplecorp.com from the network using VLAN segmentation.
+
+April 22nd, 2019, 03:10:14: SampleCorp's SOC and DFIR teams plugged a host security solution to both 
+
+WKST01.samplecorp.com and HR01.samplecorp.com to collect more data from the affected systems.
+
+April 22nd, 2019, 03:43:34: The firewall rules were updated to block the known C2 IP address, effectively cutting off the unauthorized entity's remote access.
+
+Eradication Times
+
+April 22nd, 2019, 04:11:00: A specialized malware removal tool was used to clean both WKST01.samplecorp.com and 
+
+HR01.samplecorp.com of the deployed malware.
+
+April 22nd, 2019, 04:30:00: All systems, starting with WKST01.samplecorp.com were updated to the latest version of Acrobat Reader, mitigating the vulnerability that led to the initial compromise.
+
+April 22nd, 2019, 05:01:08: The API keys that were accessed by the unauthorized entity have been revoked.
+
+April 22nd, 2019, 05:05:08: The login credentials of the user who accessed the cv.pdf file, as well as those of users who have recently signed into both WKST01.samplecorp.com and HR01.samplecorp.com, have been reset.
+
+Recovery Times
+
+April 22nd, 2019, 05:21:20: After ensuring that WKST01.samplecorp.com was malware-free, the SOC team restored the system from a verified backup.
+
+April 22nd, 2019, 05:58:50: After ensuring that HR01.samplecorp.com was malware-free, the SOC team restored the system from a verified backup.
+
+April 22nd, 2019, 06:33:44: The development team rolled out an emergency patch for the buffer overflow vulnerability in the proprietary HR application, which was then deployed to HR01.samplecorp.com.
+
+<h3>Nature of the Attack</h3>
+
+In this segment, we should meticulously dissect the modus operandi of the unauthorized entity, shedding light on the specific tactics, techniques, and procedures (TTPs) they employed throughout their intrusion. For instance, let's dive into the methods the SOC team used to determine that the unauthorized entity utilized the Metasploit framework in their operations.
+
+<h3>Detecting Metasploit</h3>
+
+To better understand the tactics and techniques of the unauthorized entity, we delved into the malicious PowerShell commands executed.
+
+Particularly, the one shown in the following screenshot.
+
+<img width="682" height="432" alt="image" src="https://github.com/user-attachments/assets/2e140e65-6449-4108-8e2f-61724778258d" />
+
+Upon inspection, it became clear that double encoding was used, likely as a means to bypass detection mechanisms. The SOC team successfully decoded the malicious payload, revealing the exact PowerShell code executed within the memory of WKST01.samplecorp.com.
+
+<img width="683" height="461" alt="image" src="https://github.com/user-attachments/assets/364efece-718c-4446-aaad-d8cfe548b23d" />
+
+By leveraging open source intelligence, our SOC team determined that this PowerShell code is probably linked to the Metasploit post-exploitation framework.
+
+<img width="681" height="256" alt="image" src="https://github.com/user-attachments/assets/46bbd861-da8d-4c9a-8a08-1b64a3979e17" />
+
+To support our hypothesis that Metasploit was used, we dived deeper into the detected shellcode. We specifically exported the packet bytes containing the shellcode (as a.bin) and subsequently submitted them to VirusTotal for evaluation.
+
+<img width="685" height="610" alt="image" src="https://github.com/user-attachments/assets/f50a667c-5a7d-4b89-85a0-6fab5eb3ee16" />
+
+<img width="684" height="517" alt="image" src="https://github.com/user-attachments/assets/487142e2-10be-4fab-97ee-1b1fd6e131e4" />
+
+<img width="684" height="533" alt="image" src="https://github.com/user-attachments/assets/e5cca116-c51b-4461-b494-66e8ec32d4e8" />
+
+The results from VirusTotal affirmed our suspicion that Metasploit was in play. Both metacoder and shikata are intrinsically linked to the Metasploit-generated shellcode.
+
+<h3>Impact Analysis</h3>
+
+In this segment, we should dive deeper into the initial stakeholder impact analysis presented at the outset of this report. Given the company's unique internal structure, business landscape, and regulatory obligations, it's crucial to offer a comprehensive evaluation of the incident's implications for every affected party.
+
+<h3>Response and Recovery Analysis</h3>
+
+<h3>Immediate Response Actions</h3>
+
+Revocation of Access
+
+- Identification of Compromised Accounts/Systems: Using Elastic SIEM solution, suspicious activities associated with unauthorized access were flagged on WKST01.samplecorp.com. Then, a combination of traffic and log analysis uncovered unauthorized access on HR01.samplecorp.com as well.
+
+- Timeframe: Unauthorized activities were detected at April 22, 2019, 01:05:00. Access was terminated by April 22nd, 2019, 03:43:34 upon firewall rule update to block the C2 IP address.
+
+- Method of Revocation: Alongside the firewall rules, Active Directory policies were applied to force log-off sessions from possibly compromised accounts. Additionally, affected user credentials were reset and accessed
+
+- API keys were revoked, further inhibiting unauthorized access.
+
+- Impact: Immediate revocation of access halted potential lateral movement, preventing further system compromise and data exfiltration attempts.
+
+Containment Strategy
+
+Short-term Containment: As part of the initial response, VLAN segmentation was promptly applied, effectively isolating WKST01.samplecorp.com and HR01.samplecorp.com from the rest of the network, and hindering any lateral movement by the threat actor.
+
+Long-term Containment: The next phase of containment involves a more robust implementation of network segmentation, ensuring specific departments or critical infrastructure run on isolated network segments, and robust network access controls, ensuring that only authorized devices have access to an organization's internal network. Both would reduce the attack surface for future threats.
+
+Effectiveness: The containment strategies were successful in ensuring that the threat actor did not escalate privileges or move to adjacent systems, thus limiting the incident's impact.
+
