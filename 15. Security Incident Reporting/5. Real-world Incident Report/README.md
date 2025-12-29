@@ -315,3 +315,162 @@ Long-term Containment: The next phase of containment involves a more robust impl
 
 Effectiveness: The containment strategies were successful in ensuring that the threat actor did not escalate privileges or move to adjacent systems, thus limiting the incident's impact.
 
+Eradication Measures
+
+Malware Removal
+
+Identification: Suspicious processes were flagged on the compromised systems, and a deep dive forensic examination revealed traces of the Metasploit post-exploitation framework, which was further confirmed by VirusTotal analysis.
+
+Removal Techniques: Using a specialized malware removal tool, all identified malicious payloads were eradicated from WKST01.samplecorp.com and HR01.samplecorp.com.
+
+Verification: Post-removal, a secondary scan was initiated, and a heuristic analysis was performed to ensure no remnants of the malware persisted.
+
+System Patching
+
+Vulnerability Identification: A vulnerable instance of Acrobat Reader was identified, leading to the initial compromise. Cross-referencing with known vulnerabilities pointed towards a potential exploit being used. A buffer overflow vulnerability, in a proprietary application developed by SampleCorp was also identified.
+
+Patch Management: All systems, were promptly updated to the latest version of Acrobat Reader that addressed the known vulnerability. The development team rolled out an emergency patch for the buffer overflow vulnerability in the proprietary HR application, which was then deployed to HR01.samplecorp.com. Patching was done in a staged manner, with critical systems prioritized.
+
+Fallback Procedures: System snapshots and configurations were backed up before the patching process, ensuring a swift rollback if the update introduced any system instabilities.
+
+Recovery Steps
+Data Restoration
+
+Backup Validation: Prior to data restoration, backup checksums were cross-verified to ensure the integrity of the backup data.
+Restoration Process: The SOC team meticulously restored both affected systems from validated backups.
+Data Integrity Checks: Post-restoration, cryptographic hashing using SHA-256 was employed to verify the integrity and authenticity of the restored data.
+System Validation
+
+Security Measures: The systems' firewalls and intrusion detection systems were updated with the latest threat intelligence feeds, ensuring any indicators of compromise (IoCs) from this incident would trigger instant alerts.
+Operational Checks: Before reintroducing systems into the live environment, a battery of operational tests, including load and stress testing, was conducted to confirm the systems' stability and performance.
+
+Post-Incident Actions
+
+Monitoring
+
+Enhanced Monitoring Plans: The monitoring paradigm has been revamped to include behavioral analytics, focusing on spotting deviations from baseline behaviors which could indicate compromise. In addition, inventory and asset management activities commenced to facilitate the implementation of network access controls.
+
+Tools and Technologies: Leveraging the capabilities of the existing Elastic SIEM, advanced correlation rules will be implemented, specifically designed to detect the tactics, techniques, and procedures (TTPs) identified in this breach.
+
+Lessons Learned
+
+
+Gap Analysis: The incident shed light on certain gaps, primarily around network access controls, email filtering, network segregation, and user training about potential phishing attempts with malicious documents.
+
+Recommendations for Improvement: Initiatives around inventory and asset management, email filtering, and improved security awareness training are prioritized.
+
+Future Strategy: A forward-looking strategy will involve more granular network access controls and network segmentation, adopting a zero-trust security model, and increasing investments in both security awareness training and email filtering.
+
+<h3>Annex A</h3>
+
+<h3>Technical Timeline</h3>
+
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+    <thead style="background-color: #012060; color: white;">
+        <tr>
+            <th>Time</th>
+            <th>Activity</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>April 22nd, 2019, 00:27:27</td>
+            <td>
+                An employee opened a malicious PDF document (<strong>cv.pdf</strong>) on 
+                <strong>WKST01.samplecorp.com</strong>, exploiting a known vulnerability in an
+                outdated version of Acrobat Reader. This resulted in execution of a malicious
+                payload and establishment of the initial foothold.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 00:35:09</td>
+            <td>
+                The unauthorized entity accessed multiple directories on 
+                <strong>WKST01.samplecorp.com</strong> containing proprietary source code and API keys.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 00:50:18</td>
+            <td>
+                Reconnaissance activities identified a buffer overflow vulnerability in a proprietary
+                HR application on <strong>HR01.samplecorp.com</strong>, which was exploited to gain
+                unauthorized access to the HR system.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 01:30:12</td>
+            <td>
+                An unencrypted database containing sensitive employee and partner data (including
+                Social Security numbers and salary information) was discovered on 
+                <strong>HR01.samplecorp.com</strong>. The data was compressed and exfiltrated via a
+                secure SSH tunnel to an external server.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 02:30:11</td>
+            <td>
+                SOC and DFIR teams detected the activity and immediately isolated 
+                <strong>WKST01.samplecorp.com</strong> and <strong>HR01.samplecorp.com</strong> using
+                VLAN segmentation.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 03:10:14</td>
+            <td>
+                Host-based security solutions were deployed on both affected systems to collect
+                additional forensic data.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 03:43:34</td>
+            <td>
+                Firewall rules were updated to block the identified command-and-control (C2) IP address,
+                terminating remote attacker access.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 04:11:00</td>
+            <td>
+                Specialized malware removal tools were used to clean both compromised systems.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 04:30:00</td>
+            <td>
+                All systems were updated to the latest version of Acrobat Reader, mitigating the
+                vulnerability used for initial compromise.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 05:01:08</td>
+            <td>
+                Compromised API keys were revoked.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 05:05:08</td>
+            <td>
+                User credentials associated with the compromised systems were reset.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 05:21:20</td>
+            <td>
+                <strong>WKST01.samplecorp.com</strong> was restored from a verified clean backup.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 05:58:50</td>
+            <td>
+                <strong>HR01.samplecorp.com</strong> was restored from a verified clean backup.
+            </td>
+        </tr>
+        <tr>
+            <td>April 22nd, 2019, 06:33:44</td>
+            <td>
+                An emergency patch addressing the buffer overflow vulnerability in the proprietary HR
+                application was deployed to <strong>HR01.samplecorp.com</strong>.
+            </td>
+        </tr>
+    </tbody>
+</table>
